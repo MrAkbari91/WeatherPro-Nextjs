@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description:
     "Get accurate weather forecasts, hourly predictions, and 7-day outlook with our modern weather app. Features location detection, search, and beautiful weather visualizations.",
   keywords: "weather, forecast, temperature, humidity, wind speed, weather app, climate",
-  authors: [{ name: "WeatherPro Team" }],
+  authors: [{ name: "Dhruv Akbari" }],
   viewport: "width=device-width, initial-scale=1",
 }
 
@@ -22,7 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/weather.svg" />
+        <meta name="google-site-verification" content="M71tdDiU-O499RIu-uqiDLBLkJAVh67t9e107tz2UVk" />
       </head>
       <body className={inter.className}>{children}</body>
     </html>

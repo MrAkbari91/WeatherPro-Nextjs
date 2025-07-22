@@ -1,53 +1,59 @@
 # 🌦️ WeatherPro – Redesigned & Reimagined
 
-**WeatherPro** has been completely redesigned with a stunning, modern interface that addresses all key concerns: visual clarity, responsive design, and fully integrated weather data. Built with **Next.js 15**, **React 19**, and **Tailwind CSS**, WeatherPro now sets the standard for open-source weather dashboards.
+**WeatherPro** has been completely redesigned with a stunning, modern interface that addresses all key concerns: visual clarity, responsive design, dynamic themes, real API integration, and automatic location detection. Built with **Next.js 15**, **React 19**, and **Tailwind CSS**, WeatherPro now sets the standard for open-source weather dashboards.
 
 ---
 
 ## 🚀 Major Improvements
 
-### 🌗 Clear Light/Dark Theme Differentiation
-- **Light Mode**: Bright sky gradients and vibrant color palettes.
-- **Dark Mode**: Deep slate and purple gradients with elegant contrast.
-- Unique visual identity for each theme with a distinct look and feel.
+### 🎨 Atmospheric Dynamic Themes
+- **Sunny**: Warm yellow-orange-red gradients
+- **Rainy**: Cool gray-blue gradients
+- **Cloudy**: Soft gray-blue combinations
+- **Stormy**: Dark purple-gray atmospheres
+- **Snowy**: Light blue-white winter themes
+- **Foggy**: Muted gray atmospheric effects
 
-### 🧩 Perfect Component Alignment
-- Clean grid-based layout using Tailwind’s powerful utilities.
-- Consistent spacing, padding, and responsive resizing.
-- Optimized for readability and clean visual hierarchy.
+### ✨ Smooth Load Animations
+- Staggered element animations with delays
+- Fade-in, slide-up, and scale effects
+- Rotating weather icons on load
+- Progressive reveal of all components
 
-### 🔄 Complete Weather Data Integration
-- Dynamic updates for temperature, forecasts, and conditions per location.
-- Mock database for cities like **New York**, **London**, and **Current Location**.
-- Seamless weather variations and realistic environmental details.
+### 📍 Automatic Location Detection
+- No permission prompts – silent geolocation
+- Fallback to default city if location fails
+- Auto-detection on app load
 
-### 📱 Fully Responsive Design
-- Mobile-first design strategy with adaptive components.
-- Optimized breakpoints for phones, tablets, and desktops.
-- Intuitive touch support and swipe interactions.
+### 🌐 Real OpenWeatherMap API Integration
+- Live current weather data
+- Real 5-day / 3-hour forecast
+- Accurate weather icons and real-time updates
+
+### 🔄 Complete Data Integration
+- Temperature, humidity, wind, pressure, visibility
+- Real sunrise/sunset times and precipitation info
+- All weather data updates on location change
+
+### 📱 7-Day Forecast Scrolling
+- Vertical scroll with hidden scrollbar
+- Smooth scroll and responsive height
+- Adaptive overflow handling
+
+### 🧩 Component-Based Design
+- Modular structure with reusable components
+- Clean layout using Tailwind utilities
+- Consistent spacing, alignment, and scaling
 
 ### 🎨 Weather-App Specific Styling
-- Real-time clock with themed icons.
-- Location info with flags and country names.
-- Custom weather cards with glassmorphism effects.
-- Color-coded icons and metrics (temperature, wind, humidity, etc.).
+- Real-time clock, country flags, weather cards
+- Glassmorphism effects and color-coded metrics
 
-### ✍️ Proper Spacing & Typography
-- Elegant typography with scalable fonts and clean line heights.
-- Professional font pairings and weights for improved readability.
-- Thoughtful spacing for better UX and visual flow.
-
-### 🌐 Website Identity & SEO
-- Descriptive site title and meta tags.
-- Clean app branding with **WeatherPro** identity.
-- SEO-friendly metadata and mobile browser support.
-- Footer section with app description and social/contact info.
-
-### ✨ Enhanced Features
-- Smooth loading states and transitions on location change.
-- Stylish hover effects and active states.
-- Detailed weather info including sunrise/sunset and air pressure.
-- Interactive UI with polished glass-style surfaces.
+### 📊 Enhanced Features
+- Error handling with retry functionality
+- Stylish hover and active states
+- Loading spinners and graceful fallbacks
+- Background themes reflect real conditions
 
 ---
 
@@ -64,52 +70,77 @@
 
 ---
 
-## 📦 Getting Started
+## 🚀 Getting Started
 
-### 🔧 Prerequisites
+#### 1. Clone the Repository
 
-- Node.js (v18+ recommended)
-- Package manager: **pnpm**, **npm**, or **yarn**
+```bash
+git clone https://github.com/MrAkbari91/WeatherPro-Nextjs.git
+cd weather-pro
+````
 
-### 🚀 Installation
+#### 2. Install Dependencies
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/weather-pro.git
-   cd weather-pro
-   ```
+Choose your preferred package manager:
 
-2. **Install dependencies**
-   ```bash
-   pnpm install     # or
-   npm install      # or
-   yarn install
-   ```
+```bash
+# Using Bun
+bun install
 
-3. **Run the development server**
-   ```bash
-   pnpm dev         # or
-   npm run dev      # or
-   yarn dev
-   ```
+# Using pnpm
+pnpm install
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+# Using npm
+npm install
+
+# Using yarn
+yarn install
+```
+
+#### 3. Start the Development Server
+
+```bash
+# Using Bun
+bun dev
+
+# Using pnpm
+pnpm dev
+
+# Using npm
+npm run dev
+
+# Using yarn
+yarn dev
+```
+
+Once the server is running, open your browser at:
+[http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 📦 Build for Production
+### 📦 Building for Production
 
 ```bash
-pnpm build && pnpm start     # or
-npm run build && npm start   # or
+# Using Bun
+bun build && bun start
+
+# Using pnpm
+pnpm build && pnpm start
+
+# Using npm
+npm run build && npm start
+
+# Using yarn
 yarn build && yarn start
 ```
+
+> 💡 **Note:** Ensure [Bun](https://bun.sh/docs/installation) is installed globally if you're using it.
 
 ---
 
 ## 🤝 Contributing
 
-WeatherPro is open-source and welcomes contributions!  
+WeatherPro is open-source and welcomes contributions!
 Feel free to **fork**, submit **pull requests**, or suggest **features**.
 
 > Please follow best practices and open an issue for major changes.
@@ -118,12 +149,12 @@ Feel free to **fork**, submit **pull requests**, or suggest **features**.
 
 ## 👤 Author
 
-**Dhruv Akbari**  
+**Dhruv Akbari**
 📧 [dhruvakbari303@gmail.com](mailto:dhruvakbari303@gmail.com)
 
 ---
 
 ## 📄 License
 
-Licensed under the **MIT License**.  
+Licensed under the **MIT License**.
 You are free to use, modify, and distribute this project as you like.
