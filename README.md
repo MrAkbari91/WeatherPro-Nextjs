@@ -7,79 +7,101 @@
 ## 🚀 Major Improvements
 
 ### 🎨 Atmospheric Dynamic Themes
-- **Sunny**: Warm yellow-orange-red gradients
-- **Rainy**: Cool gray-blue gradients
-- **Cloudy**: Soft gray-blue combinations
-- **Stormy**: Dark purple-gray atmospheres
-- **Snowy**: Light blue-white winter themes
-- **Foggy**: Muted gray atmospheric effects
+
+- **Sunny**: Warm yellow-orange-red gradients  
+- **Rainy**: Cool gray-blue gradients  
+- **Cloudy**: Soft gray-blue combinations  
+- **Stormy**: Dark purple-gray atmospheres  
+- **Snowy**: Light blue-white winter themes  
+- **Foggy**: Muted gray atmospheric effects  
 
 ### ✨ Smooth Load Animations
-- Staggered element animations with delays
-- Fade-in, slide-up, and scale effects
-- Rotating weather icons on load
-- Progressive reveal of all components
 
-### 📍 Automatic Location Detection
-- No permission prompts – silent geolocation
-- Fallback to default city if location fails
-- Auto-detection on app load
+- Staggered element animations with delays  
+- Fade-in, slide-up, and scale effects  
+- Rotating weather icons on load  
+- Progressive reveal of all components  
+
+### 📍 Smart Location Detection (Updated)
+
+- **Permission Check**: Uses Permissions API to check location status before requesting  
+- **Graceful Fallback**: Automatically loads default city (New York) if location is denied  
+- **No Forced Prompts**: Respects user's location preferences  
+- **Silent Detection**: Tries location silently if already granted  
+
+#### 📍 Location Status Management
+
+- Tracks permission states: detecting, granted, denied, unavailable  
+- User feedback with clear status banners  
+- Optional button to re-enable location  
+- App always works even without permission  
+
+#### ⚡ Robust Error Handling
+
+- Handles API, permission, and timeout errors  
+- Friendly user-facing messages  
+- Smart fallback logic for continuous operation  
 
 ### 🌐 Real OpenWeatherMap API Integration
-- Live current weather data
-- Real 5-day / 3-hour forecast
-- Accurate weather icons and real-time updates
+
+- Live current weather data  
+- Real 5-day / 3-hour forecast  
+- Accurate weather icons and real-time updates  
 
 ### 🔄 Complete Data Integration
-- Temperature, humidity, wind, pressure, visibility
-- Real sunrise/sunset times and precipitation info
-- All weather data updates on location change
+
+- Temperature, humidity, wind, pressure, visibility  
+- Real sunrise/sunset times and precipitation info  
+- All weather data updates on location change  
 
 ### 📱 7-Day Forecast Scrolling
-- Vertical scroll with hidden scrollbar
-- Smooth scroll and responsive height
-- Adaptive overflow handling
+
+- Vertical scroll with hidden scrollbar  
+- Smooth scroll and responsive height  
+- Adaptive overflow handling  
 
 ### 🧩 Component-Based Design
-- Modular structure with reusable components
-- Clean layout using Tailwind utilities
-- Consistent spacing, alignment, and scaling
+
+- Modular structure with reusable components  
+- Clean layout using Tailwind utilities  
+- Consistent spacing, alignment, and scaling  
 
 ### 🎨 Weather-App Specific Styling
-- Real-time clock, country flags, weather cards
-- Glassmorphism effects and color-coded metrics
+
+- Real-time clock, country flags, weather cards  
+- Glassmorphism effects and color-coded metrics  
 
 ### 📊 Enhanced Features
-- Error handling with retry functionality
-- Stylish hover and active states
-- Loading spinners and graceful fallbacks
-- Background themes reflect real conditions
+
+- Retry functionality and loading spinners  
+- Background themes reflect real conditions  
+- Responsive and accessible across all devices  
 
 ---
 
 ## 🛠 Tech Stack
 
-- [Next.js 15](https://nextjs.org/)
-- [React 19](https://react.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Radix UI](https://www.radix-ui.com/)
-- [Recharts](https://recharts.org/)
-- [React Hook Form](https://react-hook-form.com/)
-- [Zod](https://zod.dev/)
-- [date-fns](https://date-fns.org/)
+- [Next.js 15](https://nextjs.org/)  
+- [React 19](https://react.dev/)  
+- [Tailwind CSS](https://tailwindcss.com/)  
+- [Radix UI](https://www.radix-ui.com/)  
+- [Recharts](https://recharts.org/)  
+- [React Hook Form](https://react-hook-form.com/)  
+- [Zod](https://zod.dev/)  
+- [date-fns](https://date-fns.org/)  
 
 ---
 
 ## 🚀 Getting Started
 
-#### 1. Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/MrAkbari91/WeatherPro-Nextjs.git
 cd weather-pro
 ````
 
-#### 2. Install Dependencies
+### 2. Install Dependencies
 
 Choose your preferred package manager:
 
@@ -97,7 +119,7 @@ npm install
 yarn install
 ```
 
-#### 3. Start the Development Server
+### 3. Start the Development Server
 
 ```bash
 # Using Bun
@@ -113,8 +135,7 @@ npm run dev
 yarn dev
 ```
 
-Once the server is running, open your browser at:
-[http://localhost:3000](http://localhost:3000)
+Then open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
@@ -134,7 +155,7 @@ npm run build && npm start
 yarn build && yarn start
 ```
 
-> 💡 **Note:** Ensure [Bun](https://bun.sh/docs/installation) is installed globally if you're using it.
+> 💡 **Note:** Make sure you have [Bun](https://bun.sh/docs/installation) installed globally if you're using it.
 
 ---
 
