@@ -28,7 +28,7 @@ import {
   Thermometer,
   Umbrella,
   AlertCircle,
-  MapPinOff,
+  Globe,
 } from "lucide-react"
 
 const API_KEY = "ca799e241c694d886db7c9f33b5dbedd"
@@ -62,6 +62,7 @@ const WeatherIcon = ({ icon, size = 24, className = "" }) => {
 export default function WeatherApp() {
   const [weatherData, setWeatherData] = useState(null)
   const [forecastData, setForecastData] = useState(null)
+  const [locationData, setLocationData] = useState(null)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [isCelsius, setIsCelsius] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
@@ -69,7 +70,7 @@ export default function WeatherApp() {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [error, setError] = useState(null)
   const [isAnimated, setIsAnimated] = useState(false)
-  const [locationStatus, setLocationStatus] = useState("detecting") // detecting, granted, denied, unavailable
+  const [locationStatus, setLocationStatus] = useState("detecting") // detecting, success, error
 
   // Update time every second
   useEffect(() => {
@@ -101,7 +102,7 @@ export default function WeatherApp() {
     localStorage.setItem("theme", isDarkMode ? "dark" : "light")
   }, [isDarkMode])
 
-  // Initialize app with location detection
+  // Initialize app with automatic location detection
   useEffect(() => {
     initializeApp()
   }, [])
@@ -114,83 +115,41 @@ export default function WeatherApp() {
   }, [weatherData, isAnimated])
 
   const initializeApp = async () => {
-    // First, try to get user's location
-    if (navigator.geolocation) {
+    try {
       setLocationStatus("detecting")
-
-      // Check if geolocation permission is already granted
-      if (navigator.permissions) {
-        try {
-          const permission = await navigator.permissions.query({ name: "geolocation" })
-
-          if (permission.state === "granted") {
-            getCurrentLocationSilently()
-          } else if (permission.state === "denied") {
-            setLocationStatus("denied")
-            loadDefaultLocation()
-          } else {
-            // Permission is 'prompt' - try to get location
-            getCurrentLocationWithPrompt()
-          }
-        } catch (error) {
-          // Fallback if permissions API is not supported
-          getCurrentLocationWithPrompt()
-        }
-      } else {
-        // Fallback if permissions API is not supported
-        getCurrentLocationWithPrompt()
-      }
-    } else {
-      setLocationStatus("unavailable")
-      loadDefaultLocation()
+      await getLocationFromIP()
+    } catch (error) {
+      console.error("Failed to get location from IP:", error)
+      setLocationStatus("error")
+      // Fallback to default location
+      await fetchWeatherByCity("New York")
     }
   }
 
-  const getCurrentLocationSilently = () => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocationStatus("granted")
-        fetchWeatherData(position.coords.latitude, position.coords.longitude)
-      },
-      (error) => {
-        console.error("Silent location error:", error)
-        setLocationStatus("denied")
-        loadDefaultLocation()
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 5000,
-        maximumAge: 300000,
-      },
-    )
-  }
+  const getLocationFromIP = async () => {
+    try {
+      const response = await fetch("https://ipapi.co/json/")
 
-  const getCurrentLocationWithPrompt = () => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocationStatus("granted")
-        fetchWeatherData(position.coords.latitude, position.coords.longitude)
-      },
-      (error) => {
-        console.error("Location error:", error)
-        if (error.code === error.PERMISSION_DENIED) {
-          setLocationStatus("denied")
-        } else {
-          setLocationStatus("unavailable")
-        }
-        loadDefaultLocation()
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 10000,
-        maximumAge: 300000,
-      },
-    )
-  }
+      if (!response.ok) {
+        throw new Error("Failed to get location data")
+      }
 
-  const loadDefaultLocation = () => {
-    // Load a popular city as default
-    fetchWeatherByCity("New York")
+      const locationInfo = await response.json()
+
+      if (locationInfo.error) {
+        throw new Error(locationInfo.reason || "Location service error")
+      }
+
+      setLocationData(locationInfo)
+      setLocationStatus("success")
+
+      // Fetch weather data using the detected coordinates
+      await fetchWeatherData(locationInfo.latitude, locationInfo.longitude)
+    } catch (error) {
+      console.error("IP location error:", error)
+      setLocationStatus("error")
+      throw error
+    }
   }
 
   const fetchWeatherData = async (lat, lon) => {
@@ -255,6 +214,10 @@ export default function WeatherApp() {
 
       setWeatherData(weather)
       setForecastData(forecast)
+
+      // Clear location data when searching manually
+      setLocationData(null)
+      setLocationStatus("success")
     } catch (err) {
       setError(err.message)
       console.error("Error fetching weather data:", err)
@@ -280,9 +243,14 @@ export default function WeatherApp() {
     setSearchQuery("")
   }
 
-  const requestLocationAccess = () => {
-    setLocationStatus("detecting")
-    getCurrentLocationWithPrompt()
+  const refreshLocation = async () => {
+    try {
+      setLocationStatus("detecting")
+      await getLocationFromIP()
+    } catch (error) {
+      console.error("Failed to refresh location:", error)
+      setLocationStatus("error")
+    }
   }
 
   const formatTime = (date) => {
@@ -395,15 +363,17 @@ export default function WeatherApp() {
   }
 
   const getLocationStatusMessage = () => {
+    if (locationData) {
+      return `Auto-detected: ${locationData.city}, ${locationData.region}, ${locationData.country_name}`
+    }
+
     switch (locationStatus) {
       case "detecting":
-        return "Detecting your location..."
-      case "denied":
-        return "Location access denied - showing default location"
-      case "unavailable":
-        return "Location services unavailable - showing default location"
-      case "granted":
-        return "Using your current location"
+        return "Detecting your location automatically..."
+      case "error":
+        return "Using default location - location detection failed"
+      case "success":
+        return "Location detected successfully"
       default:
         return ""
     }
@@ -433,27 +403,53 @@ export default function WeatherApp() {
     <div className={`min-h-screen ${getAtmosphericBackground()} transition-all duration-1000`}>
       <div className="container mx-auto px-4 py-6 lg:py-8 max-w-7xl">
         {/* Location Status Banner */}
-        {locationStatus !== "granted" && (
-          <div
-            className={`mb-6 bg-white/15 dark:bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/30 dark:border-white/20 shadow-lg transform transition-all duration-1000 ${isAnimated ? "translate-y-0 opacity-100" : "-translate-y-5 opacity-0"}`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <MapPinOff className="w-5 h-5 text-amber-400" />
-                <span className="text-white text-sm font-medium">{getLocationStatusMessage()}</span>
-              </div>
-              {locationStatus === "denied" && (
-                <Button
-                  onClick={requestLocationAccess}
-                  size="sm"
-                  className="bg-amber-500/80 hover:bg-amber-500 text-white text-xs px-4 py-2 rounded-lg"
-                >
-                  Enable Location
-                </Button>
+        <div
+          className={`mb-6 bg-white/15 dark:bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/30 dark:border-white/20 shadow-lg transform transition-all duration-1000 ${isAnimated ? "translate-y-0 opacity-100" : "-translate-y-5 opacity-0"}`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {locationStatus === "detecting" ? (
+                <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
+              ) : locationStatus === "success" ? (
+                <Globe className="w-5 h-5 text-green-400" />
+              ) : (
+                <AlertCircle className="w-5 h-5 text-orange-400" />
               )}
+              <span className="text-white text-sm font-medium">{getLocationStatusMessage()}</span>
             </div>
+            {locationStatus !== "detecting" && (
+              <Button
+                onClick={refreshLocation}
+                size="sm"
+                disabled={locationStatus === "detecting"}
+                className="bg-amber-500/80 hover:bg-amber-500 text-white text-xs px-4 py-2 rounded-lg"
+              >
+                {locationStatus === "detecting" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Refresh Location"}
+              </Button>
+            )}
           </div>
-        )}
+
+          {/* Location Details */}
+          {locationData && (
+            <div className="mt-3 pt-3 border-t border-white/20">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-white/80">
+                <div>
+                  <span className="text-white/60">IP:</span> {locationData.ip}
+                </div>
+                <div>
+                  <span className="text-white/60">ISP:</span> {locationData.org}
+                </div>
+                <div>
+                  <span className="text-white/60">Timezone:</span> {locationData.timezone}
+                </div>
+                <div>
+                  <span className="text-white/60">Coordinates:</span> {locationData.latitude?.toFixed(2)},{" "}
+                  {locationData.longitude?.toFixed(2)}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Header Section */}
         <div
@@ -568,7 +564,7 @@ export default function WeatherApp() {
                 </Button>
                 <Button
                   type="button"
-                  onClick={requestLocationAccess}
+                  onClick={refreshLocation}
                   disabled={isLoading || locationStatus === "detecting"}
                   className="bg-amber-500/80 dark:bg-amber-600/80 hover:bg-amber-500 dark:hover:bg-amber-600 text-white h-14 px-8 rounded-xl backdrop-blur-md transition-all duration-200 font-semibold"
                 >
@@ -577,9 +573,7 @@ export default function WeatherApp() {
                   ) : (
                     <Navigation size={20} />
                   )}
-                  <span className="ml-2 hidden sm:inline">
-                    {locationStatus === "granted" ? "Update Location" : "My Location"}
-                  </span>
+                  <span className="ml-2 hidden sm:inline">{locationData ? "Update Location" : "Detect Location"}</span>
                 </Button>
               </div>
             </form>
@@ -817,10 +811,10 @@ export default function WeatherApp() {
             >
               <div className="bg-white/10 dark:bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/20 dark:border-white/10">
                 <p className="text-white/80 dark:text-white/70 text-sm lg:text-base">
-                  WeatherPro - Your trusted weather companion with real-time forecasts and beautiful visualizations
+                  WeatherPro - Your trusted weather companion with real-time forecasts and automatic location detection
                 </p>
                 <p className="text-white/60 dark:text-white/50 text-xs lg:text-sm mt-2">
-                  Live data from OpenWeatherMap • Location-based forecasts • 7-day outlook
+                  Live data from OpenWeatherMap • IP-based location detection • 7-day outlook
                 </p>
               </div>
             </div>
